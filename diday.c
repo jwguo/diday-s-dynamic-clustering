@@ -1,7 +1,5 @@
 /* 9913525
  *
- *
- *
  * ***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,11 +31,26 @@ typedef struct
     int    core;
 } FVector;
 
-void   readData(FILE *fp, FVector **pFVectors, int *fVectorNdx);
-void   didayDynamicClusterMethod(FVector *pFVectors, int fVectorTotal, int clusterCnt, int *pCoreCnt, int iteration);
+void readData(FILE *fp, FVector **pFVectors, int *fVectorNdx);
+void didayDynamicClusterMethod(FVector *pFVectors,
+                               int      fVectorTotal,
+                               int      clusterCnt,
+                               int     *pCoreCnt,
+                               int      iteration);
 double twoNorm(FVector a, FVector b);
-double distCE(FVector *pFVectors, int fVectorTotal, int clusterCnt, FVector **pCores, int *coresNdx);
-void   randCore(FVector *pFVectors, int fVectorTotal, int clusterCnt, int *pCoreCnt, int **pCluster, int *clusterNdx, FVector **pCores, int *coresNdx);
+double distCE(FVector  *pFVectors,
+              int       fVectorTotal,
+              int       clusterCnt,
+              FVector **pCores,
+              int      *coresNdx);
+void randCore(FVector  *pFVectors,
+              int       fVectorTotal,
+              int       clusterCnt,
+              int      *pCoreCnt,
+              int     **pCluster,
+              int      *clusterNdx,
+              FVector **pCores,
+              int      *coresNdx);
 
 int main(int argc, char **argv)
 {
@@ -94,7 +107,8 @@ void readData(FILE *fp, FVector **pFVectors, int *fVectorNdx)
                 (*pFVectors)[(*fVectorNdx)++].z = atof(token);
                 if (fVectorTotal <= *fVectorNdx) {
                     fVectorTotal += 2 * INIT_FEATURE_VECTOR_SIZE;
-                    (*pFVectors) = realloc(*pFVectors, sizeof(FVector) * fVectorTotal);
+                    (*pFVectors) =
+                        realloc(*pFVectors, sizeof(FVector) * fVectorTotal);
                 }
             }
             token = strtok(NULL, delim);
@@ -102,7 +116,11 @@ void readData(FILE *fp, FVector **pFVectors, int *fVectorNdx)
     }
 }
 
-void didayDynamicClusterMethod(FVector *pFVectors, int fVectorTotal, int clusterCnt, int *pCoreCnt, int iteration)
+void didayDynamicClusterMethod(FVector *pFVectors,
+                               int      fVectorTotal,
+                               int      clusterCnt,
+                               int     *pCoreCnt,
+                               int      iteration)
 {
     srand(time(NULL));
     int i, j, k, m;
@@ -143,7 +161,14 @@ void didayDynamicClusterMethod(FVector *pFVectors, int fVectorTotal, int cluster
     }
 
     // randomly select multicenter cores for all clusters
-    randCore(pFVectors, fVectorTotal, clusterCnt, pCoreCnt, pCluster, clusterNdx, pCores, coresNdx);
+    randCore(pFVectors,
+             fVectorTotal,
+             clusterCnt,
+             pCoreCnt,
+             pCluster,
+             clusterNdx,
+             pCores,
+             coresNdx);
 
     // find the best cluster sets and core sets iteratively
     int bestCoreSet[fVectorTotal];
@@ -179,7 +204,14 @@ void didayDynamicClusterMethod(FVector *pFVectors, int fVectorTotal, int cluster
             }
         }
         // reselect random new core sets
-        randCore(pFVectors, fVectorTotal, clusterCnt, pCoreCnt, pCluster, clusterNdx, pCores, coresNdx);
+        randCore(pFVectors,
+                 fVectorTotal,
+                 clusterCnt,
+                 pCoreCnt,
+                 pCluster,
+                 clusterNdx,
+                 pCores,
+                 coresNdx);
     }
 
     // print final results to standard output
@@ -191,8 +223,11 @@ void didayDynamicClusterMethod(FVector *pFVectors, int fVectorTotal, int cluster
         for (j = 0; j < fVectorTotal; j++) {
             if (pFVectors[j].cluster == i) {
                 memberCnts[i]++;
-                printf("(%d, %d, %d)", (int)pFVectors[j].x, (int)pFVectors[j].y, (int)pFVectors[j].z);
-                if(pFVectors[j].core == i)
+                printf("(%d, %d, %d)",
+                       (int)pFVectors[j].x,
+                       (int)pFVectors[j].y,
+                       (int)pFVectors[j].z);
+                if (pFVectors[j].core == i)
                     printf(" <- core of cluster #%d", i);
                 printf("\n");
             }
@@ -212,7 +247,11 @@ double twoNorm(FVector a, FVector b)
                 pow(a.z - b.z, 2), 0.5));
 }
 
-double distCE(FVector *pFVectors, int fVectorTotal, int clusterCnt, FVector **pCores, int *coresNdx)
+double distCE(FVector  *pFVectors,
+              int       fVectorTotal,
+              int       clusterCnt,
+              FVector **pCores,
+              int      *coresNdx)
 {
     int i, j;
     int clusterNum;
@@ -229,7 +268,14 @@ double distCE(FVector *pFVectors, int fVectorTotal, int clusterCnt, FVector **pC
     return result;
 }
 
-void randCore(FVector *pFVectors, int fVectorTotal, int clusterCnt, int *pCoreCnt, int **pCluster, int *clusterNdx, FVector **pCores, int *coresNdx)
+void randCore(FVector  *pFVectors,
+              int       fVectorTotal,
+              int       clusterCnt,
+              int      *pCoreCnt,
+              int     **pCluster,
+              int      *clusterNdx,
+              FVector **pCores,
+              int      *coresNdx)
 {
     int i, j;
     int randNdx;
@@ -248,7 +294,8 @@ void randCore(FVector *pFVectors, int fVectorTotal, int clusterCnt, int *pCoreCn
                 // each cluster member is core
                 pFVectors[pCluster[i][j]].core = i;
                 // !!test
-                if (pFVectors[pCluster[i][j]].core != pFVectors[pCluster[i][j]].cluster)
+                if (pFVectors[pCluster[i][j]].core !=
+                    pFVectors[pCluster[i][j]].cluster)
                     printf("\n\nERROR!!ERROR!!ERROR!!\n\n");
                 pCores[i][coresNdx[i]++] = pFVectors[pCluster[i][j]];
             }
