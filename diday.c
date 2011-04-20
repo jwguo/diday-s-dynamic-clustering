@@ -183,9 +183,6 @@ void didayDynamicClusterMethod(FVector *pFVectors, int fVectorTotal, int cluster
     }
 
     // print final results to standard output
-    //for (i = 0; i < fVectorTotal; i++)
-    //    printf("(%d, %d, %d):\tcluster: %d\tcore: %d\n", (int)pFVectors[i].x, (int)pFVectors[i].y, (int)pFVectors[i].z,
-    //            bestClusterSet[i], bestCoreSet[i]);
     int memberCnts[clusterCnt];
     for (i = 0; i < clusterCnt; i++)
         memberCnts[i] = 0;
@@ -205,7 +202,7 @@ void didayDynamicClusterMethod(FVector *pFVectors, int fVectorTotal, int cluster
     for (i = 0; i < clusterCnt; i++)
         printf("cluster %d: #%d\n", i, memberCnts[i]);
 
-    printf("\nmin( D(C,E) ): %d\n", (int)minDistCE);
+    printf("\nmin( D(C,E) ): %f\n", minDistCE);
 }
 
 double twoNorm(FVector a, FVector b)
