@@ -235,7 +235,7 @@ void didayDynamicClusterMethod(FVector *pFVectors,
     }
     printf("\n");
     for (i = 0; i < clusterCnt; i++)
-        printf("cluster %d: #%d\n", i, memberCnts[i]);
+        printf("# of cluster %d: %d\n", i, memberCnts[i]);
 
     printf("\nmin( D(C,E) ): %f\n", minDistCE);
 }
